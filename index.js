@@ -1,6 +1,5 @@
 const inquirer = require("inquirer")
 const mysql = require("mysql2")
-
 const { printTable } = require("console-table-printer")
 require("dotenv").config()
 
@@ -25,6 +24,7 @@ function mainMenu() {
         choices: ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role"]
     })
         .then(answer => {
+
             if (answer.Selection === "view all employees") {
                 viewEmployees()
             }
@@ -33,7 +33,15 @@ function mainMenu() {
             } else if (answer.Selection === "update an employee role") {
                 updateEmployeeRole()
             }
-
+            else if (answer.Selection === "view All the departments") {
+                viewDepartments()
+            }
+            else if (answer.Selection === "add a department") {
+                addDepartment()
+            }
+            else if (answer.Selection === "add a role") {
+                addRole()
+            }
         })
 }
 
