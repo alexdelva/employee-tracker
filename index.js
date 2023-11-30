@@ -25,12 +25,12 @@ function mainMenu() {
         choices: ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role"]
     })
         .then(answer => {
-            if (answer.selection === "view all employees") {
+            if (answer.Selection === "view all employees") {
                 viewEmployees()
             }
-            else if (answer.selection === "add an employee") {
+            else if (answer.Selection === "add an employee") {
                 addEmployee()
-            } else if (answer.selection === "update an employee role") {
+            } else if (answer.Selection === "update an employee role") {
                 updateEmployeeRole()
             }
 
@@ -38,7 +38,7 @@ function mainMenu() {
 }
 
 function viewEmployees() {
-    db.query(`SELECT employee.id , employye.first_name, employee.last_name,title, name as department, salary, CONCAT(first_name, ` `, last_name) as manager from employee
+    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(first_name, ` `, last_name) as manager from employee
 LEFT JOIN on employee.role_id.role.id
 LEFT JOIN department on department_id=role.department_id
 LEFT JOIN employee as bosses on employee.manager_id=bosses.id
