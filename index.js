@@ -38,7 +38,7 @@ function mainMenu() {
 }
 
 function viewEmployees() {
-    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(first_name, ` `, last_name) as manager from employee
+    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(first_name,' ', last_name) as manager from employee
 LEFT JOIN on employee.role_id.role.id
 LEFT JOIN department on department_id=role.department_id
 LEFT JOIN employee as bosses on employee.manager_id=bosses.id
@@ -85,27 +85,27 @@ function addEmployee() {
 }
 
 function updateEmployeeRole() {
-    db.query("SELECT id as value,title as name from role", (err, roleData) => {
+    db.query("SELECT id as value, title as name FROM role", (err, roleData) => {
         db.query("SELECT id as value, CONCAT(first_name,' ',last_name) as name FROM employee", (err, employeeData) => {
             inquirer.prompt([
                 {
                     type: "list",
                     message: "Choose the following title:",
                     name: "role_id",
-                    choices:roleData
+                    choices: roleData
                 },
                 {
                     type: "list",
                     message: "Choose the following employee:",
-                    name: "employee_id",
-                    choices:employeeData
+                    name: "id", 
+                    choices: employeeData
                 },
 
-            ]).then(answer=>{
-               db.query("UPDATE employee SET role_id = ? WHERE id = ?)",[answer.role_id,answer.id],err=>{
-                viewEmployees()
-               }) 
-            })
-        })
-    })
+            ]).then(answer => {
+                db.query("UPDATE employee SET role_id = ? WHERE id = ?", [answer.role_id, answer.id], (err) => { 
+                    viewEmployees();
+                });
+            });
+        });
+    });
 }
