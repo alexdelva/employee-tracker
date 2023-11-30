@@ -30,8 +30,7 @@ MIT License
   
   
   ## Contribution
-  
-N/A
+  Help from TAs, and Instructor
   
   ## Tests
   
