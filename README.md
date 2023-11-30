@@ -44,3 +44,5 @@ N/A
   <li> <a href="mailto:alexdelva16@gmail.com">Email </a> </li>
   </ul>
 
+<img width="1036" alt="Screenshot 2023-11-29 at 9 47 14 PM" src="https://github.com/alexdelva/employee-tracker/assets/119612892/2dcdce43-ed28-4ea1-ae2c-cfa760cc3f18">
+
