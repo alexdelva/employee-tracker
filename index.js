@@ -40,16 +40,19 @@ function mainMenu() {
                 addDepartment()
             }
             else if (answer.Selection === "add a role") {
+                viewRoles()
+            }
+            else if (answer.Selection === "add a role") {
                 addRole()
             }
         })
 }
 
 function viewEmployees() {
-    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(first_name,' ', last_name) as manager from employee
-LEFT JOIN on employee.role_id.role.id
-LEFT JOIN department on department_id=role.department_id
-LEFT JOIN employee as bosses on employee.manager_id=bosses.id
+    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(bosses.first_name,' ', bosses.last_name) as Manager FROM employee
+LEFT JOIN on employee.role_id.= role.id
+LEFT JOIN department on department_id = role.department_id
+LEFT JOIN employee AS bosses ON employee.manager_id =bosses.id
 `, (err, data) => {
         printTable(data)
         mainMenu()
@@ -94,7 +97,7 @@ function addEmployee() {
 
 function updateEmployeeRole() {
     db.query("SELECT id as value, title as name FROM role", (err, roleData) => {
-        db.query("SELECT id as value, CONCAT(first_name,' ',last_name) as name FROM employee", (err, employeeData) => {
+        db.query("SELECT id as value, CONCAT(first_name,' ',last_name) as name FROM employee WHERE manager_id is null", (err, employeeData) => {
             inquirer.prompt([
                 {
                     type: "list",
@@ -105,7 +108,7 @@ function updateEmployeeRole() {
                 {
                     type: "list",
                     message: "Choose the following employee:",
-                    name: "id", 
+                    name: "employee_id", 
                     choices: employeeData
                 },
 
@@ -116,4 +119,34 @@ function updateEmployeeRole() {
             });
         });
     });
+}
+
+function viewDepartments() {
+    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(bosses.first_name,' ', bosses.last_name) as Manager FROM employee
+LEFT JOIN on employee.role_id = role.id
+LEFT JOIN department on department_id =role.department_id
+LEFT JOIN employee AS bosses ON employee.manager_id=bosses.id
+`, (err, data) => {
+        printTable(data)
+        mainMenu()
+    })
+}
+function addDepartment() {
+    db.query("SELECT * FROM department", (err, departmentData) => {
+        db.query("SELECT id as value, CONCAT(department_id) as name FROM department WHERE department_is NULL", (err, managerData) => {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    message: "What is the name of the Department?",
+                    name: "department_id"
+                },
+            
+
+            ]).then(answer=>{
+               db.query("INSERT INTO department (department)VALUES(?,)",[answer.department],err=>{
+                viewDepartments()
+               }) 
+            })
+        })
+    })
 }
