@@ -49,14 +49,14 @@ function mainMenu() {
 }
 
 function viewEmployees() {
-    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(bosses.first_name,' ', bosses.last_name) as Manager FROM employee
-LEFT JOIN on employee.role_id.= role.id
-LEFT JOIN department on department_id = role.department_id
-LEFT JOIN employee AS bosses ON employee.manager_id =bosses.id
+    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name AS department, salary, CONCAT(bosses.first_name,' ', bosses.last_name) AS Manager FROM employee
+LEFT JOIN ON employee.role_id.= role.id
+LEFT JOIN department ON department_id = role.department_id
+LEFT JOIN employee AS bosses ON employee.manager_id = bosses.id;
 `, (err, data) => {
         printTable(data)
-        mainMenu()
-    })
+        mainMenu();
+    });
 }
 
 function addEmployee() {
@@ -122,14 +122,14 @@ function updateEmployeeRole() {
 }
 
 function viewDepartments() {
-    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(bosses.first_name,' ', bosses.last_name) as Manager FROM employee
-LEFT JOIN on employee.role_id = role.id
-LEFT JOIN department on department_id =role.department_id
-LEFT JOIN employee AS bosses ON employee.manager_id=bosses.id
+    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name AS department, salary, CONCAT(bosses.first_name,' ', bosses.last_name) AS Manager FROM employee
+LEFT JOIN role ON employee.role_id = role.id
+LEFT JOIN department ON department_id =role.department_id
+LEFT JOIN employee AS bosses ON employee.manager_id=bosses.id;
 `, (err, data) => {
-        printTable(data)
-        mainMenu()
-    })
+        printTable(data);
+        mainMenu();
+    });
 }
 function addDepartment() {
     db.query("SELECT * FROM department", (err, departmentData) => {
@@ -143,10 +143,40 @@ function addDepartment() {
             
 
             ]).then(answer=>{
-               db.query("INSERT INTO department (department)VALUES(?,)",[answer.department],err=>{
-                viewDepartments()
-               }) 
+               db.query("INSERT INTO department (name) VALUES(?)",[answer.department],err=>{
+                viewDepartments();
+               });
             })
         })
     })
 }
+
+function viewRoles() {
+    db.query(`SELECT employee.id , employee.first_name, employee.last_name,title, name as department, salary, CONCAT(bosses.first_name,' ', bosses.last_name) AS Manager FROM employee
+    LEFT JOIN on employee.role_id.= role.id
+    LEFT JOIN department on department_id = role.department_id
+    LEFT JOIN employee AS bosses ON employee.manager_id =bosses.id;`, (err, data) => {
+            printTable(data);
+            mainMenu();
+        });
+}
+
+function addRole () {
+    db.query("INSERT into role_id as value from role", (err, roleData) => {
+       
+            inquirer.prompt([
+                {
+                    type: "list",
+                    message: "choose the following title",
+                    name: "role_id",
+                    choices: roleData
+                },
+            
+
+            ]).then(answer=>{
+               db.query("UPDATE employee SET role_id=?",(answer.role_id),err=>{
+                viewEmployees()
+               }) 
+            })
+        })
+    }
